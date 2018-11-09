@@ -9,6 +9,7 @@ import (
 
 	"github.com/openshift/sre-dashboard/auth"
 	"github.com/openshift/sre-dashboard/controllers"
+	"github.com/openshift/sre-dashboard/databases"
 	"html/template"
 	"io"
 	"log"
@@ -55,8 +56,8 @@ func init() {
 	Routers.Use(middleware.Logger())
 	Routers.Use(middleware.Recover())
 
-	Routers.Use(session.Middleware(sessions.NewCookieStore([]byte(os.Getenv("COOKIE_SECRET")))))
-	Routers.Use(controllers.AuthMiddleware())
+	Routers.Use(session.Middleware(sessions.NewCookieStore([]byte(databases.CookieSecret))))
+	Routers.Use(controllers.AuthMiddleware()) // Requires users be logged in with an @redhat.com email
 
 	Routers.GET("/", controllers.GetMain)
 	Routers.POST("/", controllers.GetMain)

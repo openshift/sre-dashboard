@@ -14,8 +14,8 @@ import (
 )
 
 var (
-	//g_id, g_key       = getOauth("/secrets/google_auth_creds")
-	g_id, g_key       = getOauth("/home/remote/dedgar/ansible/google_auth_creds")
+	g_id, g_key = getOauth("/secrets/google_auth_creds")
+	//g_id, g_key       = getOauth("/home/remote/dedgar/ansible/google_auth_creds")
 	oauthStateString  = "random"
 	googleOauthConfig = &oauth2.Config{
 		ClientID:     g_id,

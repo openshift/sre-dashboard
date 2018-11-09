@@ -1,20 +1,22 @@
 package databases
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/openshift/sre-dashboard/models"
-	"os"
+	"io/ioutil"
 	"time"
 )
 
 var (
-	myHost = os.Getenv("MYSQL_SERVICE_HOST")
-	myPort = os.Getenv("MYSQL_SERVICE_PORT")
-	myUser = os.Getenv("MYSQL_USER")
-	myPass = os.Getenv("MYSQL_PASSWORD")
-	myName = os.Getenv("MYSQL_DATABASE")
+	CookieSecret string
+	myHost       string
+	myPort       string
+	myUser       string
+	myPass       string
+	myName       string
 )
 
 func QueryTakedowns(dateRange int) map[string]int {
@@ -53,4 +55,28 @@ func QueryTakedowns(dateRange int) map[string]int {
 	}
 
 	return catCount
+}
+
+func init() {
+	var appSecrets models.AppSecrets
+
+	filePath := "/secrets/sre_dashboard_secrets.json"
+	//filePath := "/home/remote/dedgar/ansible/sre_dashboard_secrets.json"
+	fileBytes, err := ioutil.ReadFile(filePath)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = json.Unmarshal(fileBytes, &appSecrets)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	CookieSecret = appSecrets.CookieSecret
+	myPass = appSecrets.MysqlPassword
+	myUser = appSecrets.MysqlUser
+	myPort = appSecrets.MysqlServicePort
+	myName = appSecrets.MysqlDatabase
+	myHost = appSecrets.MysqlServiceHost
 }

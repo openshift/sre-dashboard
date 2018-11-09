@@ -28,6 +28,15 @@ type GoogleUser struct {
 	Picture       string `json:"picture"`
 }
 
+type AppSecrets struct {
+	CookieSecret     string
+	MysqlPassword    string
+	MysqlUser        string
+	MysqlServicePort string
+	MysqlDatabase    string
+	MysqlServiceHost string
+}
+
 type Account struct {
 	ID                      *int
 	Username                *string
