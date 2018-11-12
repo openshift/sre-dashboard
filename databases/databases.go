@@ -12,6 +12,8 @@ import (
 
 var (
 	CookieSecret string
+	OAuthID      string
+	OAuthKey     string
 	myHost       string
 	myPort       string
 	myUser       string
@@ -30,7 +32,7 @@ func QueryTakedowns(dateRange int) map[string]int {
 
 	mydb, err := gorm.Open("mysql", mysqlInfo)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error connecting to DB:", err)
 	}
 
 	rows, err := mydb.Model(&models.Account{}).Where("is_banned = 1 AND created_at BETWEEN ? AND ? ", startRange, endRange).Rows()
@@ -65,15 +67,17 @@ func init() {
 	fileBytes, err := ioutil.ReadFile(filePath)
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error loading secrets json: ", err)
 	}
 
 	err = json.Unmarshal(fileBytes, &appSecrets)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error Unmarshaling secrets json: ", err)
 	}
 
 	CookieSecret = appSecrets.CookieSecret
+	OAuthID = appSecrets.GoogleAuthID
+	OAuthKey = appSecrets.GoogleAuthKey
 	myPass = appSecrets.MysqlPassword
 	myUser = appSecrets.MysqlUser
 	myPort = appSecrets.MysqlServicePort

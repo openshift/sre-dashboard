@@ -34,7 +34,8 @@ func init() {
 	t := &Template{
 		templates: func() *template.Template {
 			tmpl := template.New("")
-			if err := filepath.Walk("./tmpl", func(path string, info os.FileInfo, err error) error {
+			//if err := filepath.Walk("./tmpl", func(path string, info os.FileInfo, err error) error {
+			if err := filepath.Walk("/usr/local/bin/tmpl", func(path string, info os.FileInfo, err error) error {
 				if strings.HasSuffix(path, ".html") {
 					_, err = tmpl.ParseFiles(path)
 					if err != nil {

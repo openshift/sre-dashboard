@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo-contrib/session"
+	"github.com/openshift/sre-dashboard/databases"
 	"github.com/openshift/sre-dashboard/models"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -14,7 +15,7 @@ import (
 )
 
 var (
-	g_id, g_key = getOauth("/secrets/google_auth_creds")
+	g_id, g_key = databases.OAuthID, databases.OAuthKey // getOauth("/secrets/google_auth_creds")
 	//g_id, g_key       = getOauth("/home/remote/dedgar/ansible/google_auth_creds")
 	oauthStateString  = "random"
 	googleOauthConfig = &oauth2.Config{
@@ -79,14 +80,32 @@ func HandleGoogleLogin(c echo.Context) error {
 	return c.Redirect(http.StatusTemporaryRedirect, url)
 }
 
+/*
 func getOauth(filepath string) (id, key string) {
-	filebytes, err := ioutil.ReadFile(filepath)
-	if err != nil {
-		fmt.Println(err)
-	}
-	file_str := string(filebytes)
+	var appSecrets models.OauthCreds
 
-	id, key = strings.Split(file_str, "\n")[0], strings.Split(file_str, "\n")[1]
+	filePath := "/secrets/sre_dashboard_secrets.json"
+	//filePath := "/home/remote/dedgar/ansible/sre_dashboard_secrets.json"
+	fileBytes, err := ioutil.ReadFile(filePath)
+
+	if err != nil {
+		fmt.Println("Error loading secrets json: ", err)
+	}
+
+	err = json.Unmarshal(fileBytes, &appSecrets)
+	if err != nil {
+		fmt.Println("Error Unmarshaling secrets json: ", err)
+	}
+
+	id = appSecrets.GoogleAuthID
+	key = appSecrets.GoogleAuthKey
+  	filebytes, err := ioutil.ReadFile(filepath)
+		if err != nil {
+			fmt.Println("Error getting OAuth Credentials: ", err)
+		}
+		file_str := string(filebytes)
+
+		id, key = strings.Split(file_str, "\n")[0], strings.Split(file_str, "\n")[1]
 
 	return id, key
-}
+}*/

@@ -30,6 +30,8 @@ type GoogleUser struct {
 
 type AppSecrets struct {
 	CookieSecret     string
+	GoogleAuthID     string
+	GoogleAuthKey    string
 	MysqlPassword    string
 	MysqlUser        string
 	MysqlServicePort string
