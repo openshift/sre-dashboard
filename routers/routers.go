@@ -53,12 +53,17 @@ func init() {
 	Routers = echo.New()
 	Routers.Static("/", "static")
 	Routers.Renderer = t
-	Routers.Pre(middleware.HTTPSRedirect())
+	//Routers.Pre(middleware.HTTPSRedirect())
+	Routers.Pre(middleware.HTTPSNonWWWRedirect())
+
 	Routers.Use(middleware.Logger())
 	Routers.Use(middleware.Recover())
 
 	Routers.Use(session.Middleware(sessions.NewCookieStore([]byte(databases.CookieSecret))))
-	Routers.Use(controllers.AuthMiddleware()) // Requires users be logged in with an @redhat.com email
+	//Routers.Use(controllers.AuthMiddleware()) // Requires users be logged in with an @redhat.com email
+
+	auth_group := Routers.Group("/graph")
+	auth_group.Use(controllers.AuthMiddleware())
 
 	Routers.GET("/", controllers.GetMain)
 	Routers.POST("/", controllers.GetMain)

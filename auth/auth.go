@@ -15,13 +15,11 @@ import (
 )
 
 var (
-	g_id, g_key = databases.OAuthID, databases.OAuthKey // getOauth("/secrets/google_auth_creds")
-	//g_id, g_key       = getOauth("/home/remote/dedgar/ansible/google_auth_creds")
-	oauthStateString  = "random"
+	oauthStateString  = "random" // TODO randomize
 	googleOauthConfig = &oauth2.Config{
-		ClientID:     g_id,
-		ClientSecret: g_key,
-		RedirectURL:  "http://127.0.0.1:8080/oauth/callback", //"https://sre-dashboard.openshift.com/oauth/callback",
+		ClientID:     databases.OAuthID,
+		ClientSecret: databases.OAuthKey,
+		RedirectURL:  "https://sre-dashboard.openshift.com/oauth/callback", //"http://127.0.0.1:8080/oauth/callback",
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.email",
 		},
@@ -29,6 +27,7 @@ var (
 	}
 )
 
+// GET /oauth/callback
 func HandleGoogleCallback(c echo.Context) error {
 	state := c.QueryParam("state")
 	if state != oauthStateString {
@@ -75,6 +74,7 @@ func HandleGoogleCallback(c echo.Context) error {
 	return c.String(200, string(contents)+`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=`+token.AccessToken)
 }
 
+// GET /login/google
 func HandleGoogleLogin(c echo.Context) error {
 	url := googleOauthConfig.AuthCodeURL(oauthStateString)
 	return c.Redirect(http.StatusTemporaryRedirect, url)
