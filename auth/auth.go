@@ -60,9 +60,10 @@ func HandleGoogleCallback(c echo.Context) error {
 	var gUser models.GoogleUser
 	err = json.Unmarshal(contents, &gUser)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error Unmarshaling google user json: ", err)
 	}
 
+	// use field HD == "redhat.com"
 	if gUser.VerifiedEmail == true && strings.HasSuffix(gUser.Email, "@redhat.com") {
 		sess, _ := session.Get("session", c)
 		sess.Values["authenticated"] = "true"

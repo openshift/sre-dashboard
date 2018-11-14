@@ -51,10 +51,10 @@ func init() {
 	}
 
 	Routers = echo.New()
-	Routers.Static("/", "static")
+	Routers.Static("/", "/usr/local/bin/static")
 	Routers.Renderer = t
 	//Routers.Pre(middleware.HTTPSRedirect())
-	Routers.Pre(middleware.HTTPSNonWWWRedirect())
+	//Routers.Pre(middleware.HTTPSNonWWWRedirect())
 
 	Routers.Use(middleware.Logger())
 	Routers.Use(middleware.Recover())
@@ -62,13 +62,13 @@ func init() {
 	Routers.Use(session.Middleware(sessions.NewCookieStore([]byte(databases.CookieSecret))))
 	//Routers.Use(controllers.AuthMiddleware()) // Requires users be logged in with an @redhat.com email
 
-	auth_group := Routers.Group("/graph")
-	auth_group.Use(controllers.AuthMiddleware())
+	//auth_group := Routers.Group("/graph")
+	//auth_group.Use(controllers.AuthMiddleware())
 
-	Routers.GET("/", controllers.GetMain)
+	Routers.GET("/", controllers.GetMain, controllers.AuthMiddleware())
 	Routers.POST("/", controllers.GetMain)
-	Routers.GET("/graph", controllers.GetGraph)
-	Routers.GET("/graph/", controllers.GetGraph)
+	Routers.GET("/graph", controllers.GetGraph, controllers.AuthMiddleware())
+	Routers.GET("/graph/", controllers.GetGraph, controllers.AuthMiddleware())
 	Routers.GET("/api/graph", controllers.GetApiGraph)
 	Routers.GET("/login/google", auth.HandleGoogleLogin)
 	Routers.GET("/oauth/callback", auth.HandleGoogleCallback)
