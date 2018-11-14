@@ -42,8 +42,6 @@ func HandleGoogleCallback(c echo.Context) error {
 		return c.Redirect(http.StatusTemporaryRedirect, "/")
 	}
 
-	fmt.Println("accessToken", token.AccessToken)
-
 	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 	if err != nil {
 		fmt.Println("error getting response")
@@ -63,7 +61,7 @@ func HandleGoogleCallback(c echo.Context) error {
 		fmt.Println("Error Unmarshaling google user json: ", err)
 	}
 
-	// use field HD == "redhat.com"
+	// TODO use field HD == "redhat.com"
 	if gUser.VerifiedEmail == true && strings.HasSuffix(gUser.Email, "@redhat.com") {
 		sess, _ := session.Get("session", c)
 		sess.Values["authenticated"] = "true"

@@ -34,7 +34,6 @@ func init() {
 	t := &Template{
 		templates: func() *template.Template {
 			tmpl := template.New("")
-			//if err := filepath.Walk("./tmpl", func(path string, info os.FileInfo, err error) error {
 			if err := filepath.Walk("/usr/local/bin/tmpl", func(path string, info os.FileInfo, err error) error {
 				if strings.HasSuffix(path, ".html") {
 					_, err = tmpl.ParseFiles(path)
@@ -53,23 +52,20 @@ func init() {
 	Routers = echo.New()
 	Routers.Static("/", "/usr/local/bin/static")
 	Routers.Renderer = t
-	//Routers.Pre(middleware.HTTPSRedirect())
-	//Routers.Pre(middleware.HTTPSNonWWWRedirect())
 
 	Routers.Use(middleware.Logger())
 	Routers.Use(middleware.Recover())
 
 	Routers.Use(session.Middleware(sessions.NewCookieStore([]byte(databases.CookieSecret))))
-	//Routers.Use(controllers.AuthMiddleware()) // Requires users be logged in with an @redhat.com email
 
 	//auth_group := Routers.Group("/graph")
 	//auth_group.Use(controllers.AuthMiddleware())
 
+	// AuthMiddleware Requires users be logged in with an @redhat.com email
 	Routers.GET("/", controllers.GetMain, controllers.AuthMiddleware())
 	Routers.POST("/", controllers.GetMain)
-	Routers.GET("/graph", controllers.GetGraph, controllers.AuthMiddleware())
-	Routers.GET("/graph/", controllers.GetGraph, controllers.AuthMiddleware())
-	Routers.GET("/api/graph", controllers.GetApiGraph)
+	Routers.GET("/takedowns", controllers.GetGraph, controllers.AuthMiddleware())
+	Routers.GET("/api/takedowns", controllers.GetApiGraph)
 	Routers.GET("/login/google", auth.HandleGoogleLogin)
 	Routers.GET("/oauth/callback", auth.HandleGoogleCallback)
 }
