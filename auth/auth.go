@@ -11,7 +11,6 @@ import (
 	"golang.org/x/oauth2/google"
 	"io/ioutil"
 	"net/http"
-	"strings"
 )
 
 var (
@@ -61,8 +60,7 @@ func HandleGoogleCallback(c echo.Context) error {
 		fmt.Println("Error Unmarshaling google user json: ", err)
 	}
 
-	// TODO use field HD == "redhat.com"
-	if gUser.VerifiedEmail == true && strings.HasSuffix(gUser.Email, "@redhat.com") {
+	if gUser.VerifiedEmail == true && gUser.HD == "redhat.com" {
 		sess, _ := session.Get("session", c)
 		sess.Values["authenticated"] = "true"
 		sess.Values["google_logged_in"] = gUser.Email
@@ -78,33 +76,3 @@ func HandleGoogleLogin(c echo.Context) error {
 	url := googleOauthConfig.AuthCodeURL(oauthStateString)
 	return c.Redirect(http.StatusTemporaryRedirect, url)
 }
-
-/*
-func getOauth(filepath string) (id, key string) {
-	var appSecrets models.OauthCreds
-
-	filePath := "/secrets/sre_dashboard_secrets.json"
-	//filePath := "/home/remote/dedgar/ansible/sre_dashboard_secrets.json"
-	fileBytes, err := ioutil.ReadFile(filePath)
-
-	if err != nil {
-		fmt.Println("Error loading secrets json: ", err)
-	}
-
-	err = json.Unmarshal(fileBytes, &appSecrets)
-	if err != nil {
-		fmt.Println("Error Unmarshaling secrets json: ", err)
-	}
-
-	id = appSecrets.GoogleAuthID
-	key = appSecrets.GoogleAuthKey
-  	filebytes, err := ioutil.ReadFile(filepath)
-		if err != nil {
-			fmt.Println("Error getting OAuth Credentials: ", err)
-		}
-		file_str := string(filebytes)
-
-		id, key = strings.Split(file_str, "\n")[0], strings.Split(file_str, "\n")[1]
-
-	return id, key
-}*/

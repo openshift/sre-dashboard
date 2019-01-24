@@ -26,6 +26,7 @@ type GoogleUser struct {
 	FamilyName    string `json:"family_name"`
 	Link          string `json:"link"`
 	Picture       string `json:"picture"`
+	HD            string `json:"hd"`
 }
 
 type AppSecrets struct {

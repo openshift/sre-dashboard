@@ -58,9 +58,6 @@ func init() {
 
 	Routers.Use(session.Middleware(sessions.NewCookieStore([]byte(databases.CookieSecret))))
 
-	//auth_group := Routers.Group("/graph")
-	//auth_group.Use(controllers.AuthMiddleware())
-
 	// AuthMiddleware Requires users be logged in with an @redhat.com email
 	Routers.GET("/", controllers.GetMain, controllers.AuthMiddleware())
 	Routers.POST("/", controllers.GetMain)

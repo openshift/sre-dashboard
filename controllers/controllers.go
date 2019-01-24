@@ -90,7 +90,6 @@ func Custom404Handler(err error, c echo.Context) {
 func AuthMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			//c.Response().Header().Set(echo.HeaderServer, "Echo/3.0")
 			MainSession(c)
 			sess, _ := session.Get("session", c)
 
@@ -99,7 +98,6 @@ func AuthMiddleware() echo.MiddlewareFunc {
 				fmt.Println(sess.Values)
 				return next(c)
 			}
-			//return next(c)
 			return c.Redirect(http.StatusTemporaryRedirect, "/login/google")
 		}
 	}
@@ -109,9 +107,7 @@ func MainSession(c echo.Context) { //error {
 	sess, _ := session.Get("session", c)
 	sess.Options = &sessions.Options{
 		Path:   "/",
-		MaxAge: 86400, // * 7,
-		//HttpOnly: true,
+		MaxAge: 86400,
 	}
-	//sess.Values["authenticated"] = "true"
 	sess.Save(c.Request(), c.Response())
 }
