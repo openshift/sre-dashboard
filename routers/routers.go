@@ -61,8 +61,8 @@ func init() {
 	// AuthMiddleware Requires users be logged in with an @redhat.com email
 	Routers.GET("/", controllers.GetMain, controllers.AuthMiddleware())
 	Routers.POST("/", controllers.GetMain)
-	Routers.GET("/takedowns", controllers.GetGraph, controllers.AuthMiddleware())
-	Routers.GET("/api/takedowns", controllers.GetApiGraph)
+	Routers.GET("/takedowns", controllers.GetTakedowns, controllers.AuthMiddleware())
+	Routers.GET("/api/takedowns", controllers.GetAPITakedowns)
 	Routers.GET("/login/google", auth.HandleGoogleLogin)
 	Routers.GET("/oauth/callback", auth.HandleGoogleCallback)
 }

@@ -22,17 +22,17 @@ func GetLogin(c echo.Context) error {
 	return c.Render(http.StatusOK, "login.html", nil)
 }
 
-// GET /graph
-func GetGraph(c echo.Context) error {
+// GET /takedowns
+func GetTakedowns(c echo.Context) error {
 	// Default chart shows 1 week of takedowns.
-	catCount := databases.QueryTakedowns(7)
+	catCount := databases.QueryTakedowns(30)
 	catMap := map[string]interface{}{"catCount": catCount}
 
 	return c.Render(http.StatusOK, "graph_j_pie.html", catMap)
 }
 
-// GET /api/graph
-func GetApiGraph(c echo.Context) error {
+// GET /api/takedowns
+func GetAPITakedowns(c echo.Context) error {
 	/* Example of the returned data structure:
 	{
 	  "response": {
